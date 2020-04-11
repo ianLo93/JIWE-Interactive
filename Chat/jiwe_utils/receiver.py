@@ -1,9 +1,10 @@
 """
 Receiver class implementation to keep server running 
-and relay messages between clients
+and handle messages from clients
 """
-from User import User, Connection
-# from Message import Message
+from user import User
+from connection import connection
+from message import Message
 import socket
 import select
 from _thread import *
