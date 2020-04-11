@@ -6,3 +6,5 @@
 .secrets
 .coverage
 coverage*
+*/node_modules/
+*/package-lock.json
