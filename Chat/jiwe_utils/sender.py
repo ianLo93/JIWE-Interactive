@@ -1,8 +1,12 @@
 """
 Sender implementation to relay messages
 """
-from User import User
+from connection import Connection
+
 
 class Sender:
-    def __init__(self, username):
-        self.conn_ = User.user
+    def __init__(self, conn):
+        self.conn = conn
+
+    def send(message):
+

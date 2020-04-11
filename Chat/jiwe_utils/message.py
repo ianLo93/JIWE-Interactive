@@ -1,8 +1,6 @@
 """
 This files declares Message Objects
 """
-
-
 import json
 from enum import Enum
 
@@ -17,9 +15,9 @@ class Type:
     ACK_LOGFF = 8
 
 class Message:
-    def __init__(self, sender, receiver, body, group=False):
-        self._sender = sender
-        self._receiver = receiver
+    def __init__(self, from_user, to_user, body, group=False):
+        self._from = from_user 
+        self._to = to_user 
         self._group_ = group
         self._body = body
         self.delivered = False
