@@ -11,44 +11,39 @@ import sys
 
 class Receiver:
 
-    server = None
-    connections = []
+    def __init__(self):
+        self.server_ = None
+        self.connections_ = []
 
-    @staticmethod
-    def setUp():
-        Receiver.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        Receiver.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        Receiver.connections.append(Receiver.server)
+    def setUp(self):
+        self.server_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.connections_.append(self.server_)
 
-    @staticmethod
-    def bind(ip, port):
-        Receiver.server.bind((ip, port))
+    def bind(self, ip, port):
+        self.server_.bind((ip, port))
 
     # Max number of connections listening
-    @staticmethod
-    def listen(n):
-        Receiver.server.listen(n)
+    def listen(self, n):
+        self.server_.listen(n)
 
-    @staticmethod
-    def accept():
-        return Receiver.server.accept()
+    def accept(self):
+        return self.server_.accept()
 
-    @staticmethod
-    def close():
-        Receiver.server.close()
+    def close(self):
+        self.server_.close()
 
-    @staticmethod
-    def run():
+    def run(self):
 
         while True:
-            read_sockets, _, _ = select.select(Receiver.connections, [], [])
+            read_sockets, _, _ = select.select(self.connections_, [], [])
 
             for read_socket in read_sockets:
 
-                if read_socket == Receiver.server:
-                    conn, addr = Receiver.accept()
+                if read_socket == self.server_:
+                    conn, addr = self.accept()
                     connection = Connection(conn, addr)
-                    Receiver.connections.append(connection)
+                    self.connections_.append(connection)
                     print(addr[0] + " connected")
                 else:
                     try: 
@@ -57,7 +52,7 @@ class Receiver:
                         print("receive() exiting...")
                         exit()
 
-        Receiver.close()
+        self.close()
                         
 if __name__ == '__main__':
     
@@ -65,8 +60,10 @@ if __name__ == '__main__':
         print("Error input\nUsage: server IP_address port")
         sys.exit()
 
-    Receiver.setUp()
-    Receiver.bind(sys.argv[1], int(sys.argv[2]))
-    Receiver.listen(5)
+    receiver = Receiver()
 
-    Receiver.run()
+    receiver.setUp()
+    receiver.bind(sys.argv[1], int(sys.argv[2]))
+    receiver.listen(5)
+
+    receiver.run()
