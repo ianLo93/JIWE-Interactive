@@ -1,2 +1,8 @@
-.*.swp
 *.pyc
+*.swp
+*.swo
+.cache
+*.log
+.secrets
+.coverage
+coverage*
