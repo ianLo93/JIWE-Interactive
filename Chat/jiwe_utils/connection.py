@@ -1,25 +1,26 @@
 """
-Connection class,
+Connection class
 """
 class Connection:
 
     CONST_BUFFER_SIZE = 4096
 
     def __init__(self, conn, addr):
-        self.conn_ = conn
-        self.addr_ = addr
+        self.conn = conn
+        self.addr = addr
 
     def fileno(self):
-        return self.conn_.fileno()
+        return self.conn.fileno()
 
     # supposed to analyze the msg and relay to some other user
     def on_read(self):
-        # only string for now
-        msg = self.conn_.recv(Connection.CONST_BUFFER_SIZE).decode('utf8')
-        print(msg, end='')
+        msg_buff = self.conn.recv(Connection.CONST_BUFFER_SIZE)
+        # only strings for now
+        msg = msg_buff.decode('utf8')
+        print('<' + self.addr[0] + '> ' + msg, end='')
 
     def send(self):
         pass
 
     def close():
-        self.conn_.close()
+        self.conn.close()
