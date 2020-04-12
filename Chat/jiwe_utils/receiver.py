@@ -2,43 +2,40 @@
 Receiver class implementation to keep server running 
 and handle messages from clients
 """
-import socket
+import pickle
+import struct
+import select
 
 class Receiver:
 
-    def __init__(self):
-        self.server = None
+    def __init__(self, conn):
+        self.conn = conn
 
-    def setUp(self):
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def deserialize(self, obj_in_bytes):
+        return pickle.loads(obj_in_bytes)
 
-    def bind(self, ip, port):
-        self.server.bind((ip, port))
+    def recv_indicator(self):
+        self.conn.setblocking(True)
+        ready = select.select([self.conn], [], [])
+        if ready[0]:
+            buf = self.conn.recv(4)
+        else:
+            return None
 
-    def listen(self, n):
-        self.server.listen(n)
+        return struct.unpack('!I', buf[:4])[0]
 
-    def accept(self):
-        return self.server.accept()
+    def recv_obj(self, buff_size, obj_size):
+        chunks = []
+        bytes_recd = 0
+        self.conn.setblocking(False)
+        while bytes_recd < obj_size:
+            ready = select.select([self.conn], [], [], 1)
+            if ready[0]:
+                data = self.conn.recv(min(obj_size - bytes_recd, buffer_size))
+            else:
+                return None
 
-    def close(self):
-        self.server.close()
+            chunks.append(data)
+            bytes_recd = bytes_recd + len(data)
 
-    def run(self):
-        pass
-                        
-if __name__ == '__main__':
-    
-    if (len(sys.argv) != 3):
-        print("Error inputs\nUsage: Receiver IP_address Port")
-        sys.exit()
-
-    try:
-        receiver = Receiver()
-
-        receiver.setUp()
-        receiver.bind(sys.argv[1], int(sys.argv[2]))
-        receiver.listen(5)
-        print("Receiver set up successfully")
-    except:
-        print("Caught Exception")
+        return deserialize(''.join(chunks))

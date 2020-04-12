@@ -3,23 +3,24 @@ Connection class
 """
 class Connection:
 
-    CONST_BUFFER_SIZE = 4096
+    BUFFERSIZE = 2048 
+    MAXOBJECTSIZE= 10 * 1024 * 1024
 
-    def __init__(self, conn, addr):
-        self.conn = conn
+    def __init__(self, sock, addr):
+        self.sock = sock 
         self.addr = addr
 
     def fileno(self):
-        return self.conn.fileno()
+        return self.sock.fileno()
 
-    # supposed to analyze the msg and relay to some other user
     def on_read(self):
-        msg_buff = self.conn.recv(Connection.CONST_BUFFER_SIZE)
-        # only strings for now
-        msg = msg_buff.decode('utf8')
-        print('<' + self.addr[0] + '> ' + msg, end='')
+        print(self.sock.recv(1024).decode('utf8'), end='') # echo for now
+        pass
 
     def send(self):
+        pass
+
+    def receive(self):
         pass
 
     def close():
